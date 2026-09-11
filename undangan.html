@@ -23,20 +23,22 @@
     </div>
 
     <div id="cover" class="fixed inset-0 bg-stone-900 text-amber-100 flex flex-col items-center justify-between p-8 z-40 text-center transition-all duration-700">
-        <div class="mt-12 space-y-2">
+        <div class="mt-8 space-y-2">
             <p class="text-xs uppercase tracking-widest text-amber-300/70">The Wedding Of</p>
             <h1 class="text-3xl md:text-4xl font-serif-custom text-amber-200 font-semibold" id="coverMempelai">...</h1>
         </div>
         
-        <div class="my-auto space-y-3">
-            <div class="w-20 h-20 mx-auto rounded-full bg-stone-800 border border-amber-300/30 flex items-center justify-center shadow-inner">
-                <i class="fa-solid fa-envelope-open text-amber-300 text-2xl"></i>
+        <div class="my-auto space-y-4 flex flex-col items-center">
+            <div class="w-36 h-36 md:w-44 md:h-44 rounded-full border-4 border-amber-300/30 overflow-hidden shadow-2xl relative">
+                <img id="imgCover" src="" alt="Foto Mempelai" class="w-full h-full object-cover">
             </div>
-            <p class="text-xs text-stone-400 font-light">Kepada Yth. Bapak/Ibu/Saudara/i</p>
-            <p class="text-base font-semibold text-amber-100 capitalize" id="namaTamuCover">Tamu Undangan</p>
+            <div>
+                <p class="text-xs text-stone-400 font-light">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+                <p class="text-base font-semibold text-amber-100 capitalize" id="namaTamuCover">Tamu Undangan</p>
+            </div>
         </div>
 
-        <button onclick="bukaUndangan()" class="mb-8 px-8 py-3 bg-amber-200/10 border border-amber-300/40 text-amber-200 text-xs rounded-full shadow-lg hover:bg-amber-300 hover:text-stone-900 transition-all duration-300 flex items-center space-x-2">
+        <button onclick="bukaUndangan()" class="mb-6 px-8 py-3 bg-amber-200/10 border border-amber-300/40 text-amber-200 text-xs rounded-full shadow-lg hover:bg-amber-300 hover:text-stone-900 transition-all duration-300 flex items-center space-x-2">
             <i class="fa-solid fa-envelope mr-1"></i>
             <span>Buka Undangan</span>
         </button>
@@ -49,16 +51,19 @@
 
     <main id="content" class="max-w-md mx-auto min-h-screen bg-stone-50 shadow-2xl overflow-hidden hidden pb-12">
         
-        <section class="relative bg-stone-900 text-amber-100 py-16 px-6 text-center border-b-4 border-amber-300/30">
-            <p class="text-[10px] uppercase tracking-[0.3em] text-amber-300/70 mb-2">Walimatul Ursy</p>
-            <h2 class="text-3xl font-serif-custom text-amber-200 mb-4" id="mempelaiHeader">...</h2>
+        <section class="relative bg-stone-900 text-amber-100 py-12 px-6 text-center border-b-4 border-amber-300/30">
+            <div class="w-32 h-32 mx-auto mb-4 rounded-full border-2 border-amber-300/40 overflow-hidden shadow-lg">
+                <img id="imgHero" src="" alt="Foto Mempelai" class="w-full h-full object-cover">
+            </div>
+            <p class="text-[10px] uppercase tracking-[0.3em] text-amber-300/70 mb-1">Walimatul Ursy</p>
+            <h2 class="text-2xl font-serif-custom text-amber-200 mb-2" id="mempelaiHeader">...</h2>
             <p class="text-xs font-light text-stone-300 tracking-widest" id="tanggalHeader">...</p>
         </section>
 
         <section class="p-8 text-center text-stone-600 bg-white border-b border-stone-100">
             <i class="fa-solid fa-quote-left text-amber-300/40 text-2xl mb-2"></i>
             <p class="text-xs italic leading-relaxed">
-                "Dan di antara tanda-tanda (kebesaran-Nya) ialah Dia menciptakan pasangan-pasangan untukmu dari meksasamu sendiri, agar kamu cenderung dan merasa tenteram kepadanya."
+                "Dan di antara tanda-tanda (kebesaran-Nya) ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya."
             </p>
             <p class="text-[10px] font-semibold text-stone-400 mt-2">QS. Ar-Rum: 21</p>
         </section>
@@ -147,7 +152,7 @@
 
         async function loadUndangan() {
             if (!slug) {
-                document.getElementById('loading').innerHTML = '<p class="text-rose-400 text-xs text-center p-4">URL Undangan tidak valid. Parameter ?to=slug tidak ditemukan.</p>';
+                document.getElementById('loading').innerHTML = '<p class="text-rose-400 text-xs text-center p-4">URL Undangan tidak valid.</p>';
                 return;
             }
 
@@ -158,10 +163,13 @@
                 return;
             }
 
-            // Set Data Tampilan
+            // Set Data Tampilan & Foto
             const namaMempelai = `${data.mempelai_pria} & ${data.mempelai_wanita}`;
             const tglFormatted = new Date(data.tanggal_acara).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const fotoUrl = data.foto_mempelai || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800';
 
+            document.getElementById('imgCover').src = fotoUrl;
+            document.getElementById('imgHero').src = fotoUrl;
             document.getElementById('coverMempelai').innerText = namaMempelai;
             document.getElementById('mempelaiHeader').innerText = namaMempelai;
             document.getElementById('tanggalHeader').innerText = tglFormatted;
@@ -187,7 +195,6 @@
             }, 600);
         }
 
-        // Kontrol Musik
         const music = document.getElementById('bgMusic');
         let isPlaying = false;
 
@@ -208,7 +215,6 @@
             isPlaying = !isPlaying;
         }
 
-        // Countdown Timer
         function startCountdown() {
             setInterval(() => {
                 const now = new Date().getTime();
@@ -223,7 +229,6 @@
             }, 1000);
         }
 
-        // Submit RSVP
         document.getElementById('formRSVP').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnRSVP');
@@ -242,7 +247,6 @@
             loadUcapan();
         });
 
-        // Load Ucapan
         async function loadUcapan() {
             const { data } = await db.from('rsvp').select('*').eq('slug_undangan', slug).order('created_at', { ascending: false });
             const list = document.getElementById('listUcapan');

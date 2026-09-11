@@ -1,1 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Pernikahan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-amber-50 text-slate-800 font-sans">
 
+    <!-- Screen Loading -->
+    <div id="loading" class="fixed inset-0 bg-stone-900 text-white flex flex-col items-center justify-center z-50">
+        <p class="text-sm font-light tracking-widest uppercase animate-pulse">Memuat Undangan...</p>
+    </div>
+
+    <!-- Tampilan Utama Undangan -->
+    <main id="content" class="max-w-md mx-auto min-h-screen bg-white shadow-2xl flex flex-col justify-between hidden">
+        
+        <div>
+            <!-- Header Banner -->
+            <section class="p-10 text-center bg-stone-900 text-amber-100 rounded-b-3xl">
+                <p class="text-xs uppercase tracking-widest text-amber-300/70 mb-3">The Wedding Of</p>
+                <h1 class="text-3xl font-serif text-amber-200" id="mempelai">...</h1>
+                <p class="mt-4 text-xs font-light tracking-wider text-stone-300" id="tanggal">...</p>
+            </section>
+
+            <!-- Detail Waktu & Tempat -->
+            <section class="p-6 space-y-6">
+                <div class="text-center p-4 rounded-xl border border-stone-100 bg-stone-50">
+                    <h3 class="font-serif font-bold text-lg text-stone-800">Acara Pernikahan</h3>
+                    <p id="waktu" class="text-xs text-stone-600 mt-1">...</p>
+                    <p id="lokasi" class="text-sm text-stone-700 font-medium mt-3 whitespace-pre-line">...</p>
+                    <a id="btnMaps" href="#" target="_blank" class="inline-block mt-4 px-5 py-2 bg-stone-800 text-amber-100 text-xs rounded-full shadow hover:bg-stone-700 transition">Petunjuk Lokasi (Google Maps)</a>
+                </div>
+
+                <!-- Digital Gift -->
+                <div class="p-4 bg-amber-50/60 rounded-xl text-center border border-amber-200">
+                    <h4 class="font-serif font-semibold text-sm text-amber-900">Amplop Digital</h4>
+                    <p id="rekening" class="text-xs text-amber-800 mt-1 font-mono">...</p>
+                </div>
+
+                <!-- Form RSVP -->
+                <div class="border-t pt-6">
+                    <h3 class="font-serif font-semibold text-center text-stone-800 mb-4">Konfirmasi Kehadiran & Ucapan</h3>
+                    <form id="formRSVP" class="space-y-3">
+                        <input type="text" id="namaTamu" placeholder="Nama Anda" required class="w-full text-xs p-3 border rounded-lg focus:outline-none focus:border-amber-700">
+                        <select id="kehadiranTamu" class="w-full text-xs p-3 border rounded-lg focus:outline-none focus:border-amber-700 bg-white">
+                            <option value="Hadir">Hadir</option>
+                            <option value="Tidak Hadir">Tidak Hadir</option>
+                        </select>
+                        <textarea id="pesanTamu" placeholder="Tulis doa atau ucapan..." class="w-full text-xs p-3 border rounded-lg focus:outline-none focus:border-amber-700" rows="3"></textarea>
+                        <button type="submit" id="btnRSVP" class="w-full py-3 bg-amber-900 text-amber-100 text-xs rounded-lg font-medium hover:bg-amber-950 transition">Kirim Ucapan</button>
+                    </form>
+                </div>
+
+                <!-- List Ucapan -->
+                <div class="border-t pt-4">
+                    <h4 class="text-xs font-semibold text-stone-500 mb-3">Ucapan Doa Restu</h4>
+                    <div id="listUcapan" class="space-y-2 max-h-52 overflow-y-auto pr-1">
+                        <!-- Kiriman doa akan muncul di sini -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="text-center py-4 text-[10px] text-stone-400 border-t bg-stone-50">
+            Digital Invitation
+        </footer>
+    </main>
+
+    <script>
+        const SUPABASE_URL = "https://fvbicfmbvwwrmrggofna.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2YmljZm1idnd3cm1yZ2dvZm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkwOTc2MzEsImV4cCI6MjEwNDY3MzYzMX0.Z9nTVPj2cvxw3XFDTjqtRDhPjEupac8tnbhYoaj_2oQ";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get('to');
+
+        async function loadUndangan() {
+            if (!slug) {
+                document.getElementById('loading').innerHTML = '<p class="text-red-400 text-xs">URL Undangan tidak lengkap. Pastikan link memiliki parameter ?to=slug</p>';
+                return;
+            }
+
+            const { data, error } = await db.from('undangan').select('*').eq('slug', slug).single();
+
+            if (error || !data) {
+                document.getElementById('loading').innerHTML = '<p class="text-red-400 text-xs">Undangan tidak ditemukan.</p>';
+                return;
+            }
+
+            document.getElementById('mempelai').innerText = `${data.mempelai_pria} & ${data.mempelai_wanita}`;
+            document.getElementById('tanggal').innerText = new Date(data.tanggal_acara).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('waktu').innerText = data.waktu_acara;
+            document.getElementById('lokasi').innerText = data.lokasi;
+            document.getElementById('btnMaps').href = data.link_maps || '#';
+            document.getElementById('rekening').innerText = data.rekening || '-';
+
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('content').classList.remove('hidden');
+
+            loadUcapan();
+        }
+
+        document.getElementById('formRSVP').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnRSVP');
+            btn.innerText = "Sending...";
+            btn.disabled = true;
+
+            const nama = document.getElementById('namaTamu').value;
+            const kehadiran = document.getElementById('kehadiranTamu').value;
+            const pesan = document.getElementById('pesanTamu').value;
+
+            await db.from('rsvp').insert([{ slug_undangan: slug, nama, kehadiran, pesan }]);
+            alert('Terima kasih atas ucapan & konfirmasinya!');
+            document.getElementById('formRSVP').reset();
+            btn.innerText = "Kirim Ucapan";
+            btn.disabled = false;
+            loadUcapan();
+        });
+
+        async function loadUcapan() {
+            const { data } = await db.from('rsvp').select('*').eq('slug_undangan', slug).order('created_at', { ascending: false });
+            const list = document.getElementById('listUcapan');
+            list.innerHTML = '';
+            
+            if (data && data.length > 0) {
+                data.forEach(item => {
+                    list.innerHTML += `
+                        <div class="p-3 bg-stone-50 rounded-lg text-xs border border-stone-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-semibold text-stone-800">${item.nama}</span> 
+                                <span class="px-1.5 py-0.5 text-[9px] rounded ${item.kehadiran === 'Hadir' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${item.kehadiran}</span>
+                            </div>
+                            <p class="text-stone-600 leading-relaxed">${item.pesan || ''}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                list.innerHTML = '<p class="text-stone-400 text-xs italic">Belum ada ucapan.</p>';
+            }
+        }
+
+        loadUndangan();
+    </script>
+</body>
+</html>

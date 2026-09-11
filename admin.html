@@ -38,6 +38,12 @@
                 </div>
             </div>
 
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Link URL Foto Mempelai / Prewedding (Opsional)</label>
+                <input type="url" id="foto_mempelai" placeholder="https://i.ibb.co/xxxx/foto-prewedding.jpg" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                <p class="text-[10px] text-slate-400 mt-1">*Bisa pakai link foto dari Unsplash, ImgBB, atau Google Drive public link.</p>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Tanggal Acara</label>
@@ -100,6 +106,7 @@
                 slug: slugVal,
                 mempelai_pria: document.getElementById('mempelai_pria').value,
                 mempelai_wanita: document.getElementById('mempelai_wanita').value,
+                foto_mempelai: document.getElementById('foto_mempelai').value || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800',
                 tanggal_acara: document.getElementById('tanggal_acara').value,
                 waktu_acara: document.getElementById('waktu_acara').value,
                 lokasi: document.getElementById('lokasi').value,

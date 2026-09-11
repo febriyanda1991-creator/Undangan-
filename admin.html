@@ -6,45 +6,52 @@
     <title>Dashboard Admin - Input Undangan Digital</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-slate-100 p-4 md:p-8 font-sans">
-    <div class="max-w-xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-200">
-        <div class="mb-6 border-b pb-4">
-            <h2 class="text-2xl font-bold text-slate-800">Tambah Undangan Klien</h2>
-            <p class="text-xs text-slate-500 mt-1">Input data klien untuk membuat link undangan otomatis.</p>
+    <div class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-slate-200">
+        <div class="mb-6 border-b pb-4 flex items-center justify-between">
+            <div>
+                <h2 class="text-2xl font-bold text-slate-800"><i class="fa-solid fa-wand-magic-sparkles text-blue-600 mr-2"></i>Buat Undangan Baru</h2>
+                <p class="text-xs text-slate-500 mt-1">Input data klien untuk membuat link undangan otomatis.</p>
+            </div>
+            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded-full">SaaS System</span>
         </div>
         
         <form id="formUndangan" class="space-y-4">
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">URL Custom / Slug (Harus Unik)</label>
-                <input type="text" id="slug" placeholder="contoh: romeo-juliet" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-xs font-mono">.../undangan.html?to=</span>
+                    <input type="text" id="slug" placeholder="febriyanda" required class="w-full pl-36 p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none font-mono">
+                </div>
             </div>
             
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Mempelai Pria</label>
-                    <input type="text" id="mempelai_pria" placeholder="Romeo" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Nama Mempelai Pria</label>
+                    <input type="text" id="mempelai_pria" placeholder="Febri" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Mempelai Wanita</label>
-                    <input type="text" id="mempelai_wanita" placeholder="Juliet" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Nama Mempelai Wanita</label>
+                    <input type="text" id="mempelai_wanita" placeholder="Anisa" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Tanggal Acara</label>
                     <input type="date" id="tanggal_acara" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Waktu Acara</label>
-                    <input type="text" id="waktu_acara" placeholder="09:00 - Selesai" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <input type="text" id="waktu_acara" placeholder="09:00 WIB - Selesai" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
             </div>
 
             <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Alamat Lokasi</label>
-                <textarea id="lokasi" placeholder="Gedung / Rumah, Jl. Contoh No. 123" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" rows="2"></textarea>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Alamat Lengkap Lokasi</label>
+                <textarea id="lokasi" placeholder="Gedung / Rumah, Jl. Mawar No. 123, Jakarta" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" rows="2"></textarea>
             </div>
 
             <div>
@@ -54,17 +61,24 @@
 
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Info Amplop Digital / Rekening</label>
-                <input type="text" id="rekening" placeholder="BCA 12345678 a.n. Romeo" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                <input type="text" id="rekening" placeholder="BCA 12345678 a.n. Febri" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
             </div>
 
-            <button type="submit" id="btnSubmit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200">Generate Link Undangan</button>
+            <button type="submit" id="btnSubmit" class="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition duration-200 shadow-md">
+                <i class="fa-solid fa-paper-plane mr-2"></i>Generate Link Undangan
+            </button>
         </form>
 
         <div id="hasil" class="mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl hidden">
-            <p class="text-emerald-800 font-bold text-sm">Undangan Berhasil Dibuat!</p>
-            <p class="text-xs text-slate-600 mt-1">Salin & Bagikan Link Ini ke Klien:</p>
-            <div class="mt-2 p-2 bg-white border rounded text-xs break-all font-mono">
-                <a id="linkUndangan" href="#" target="_blank" class="text-blue-600 underline"></a>
+            <div class="flex items-center text-emerald-800 font-bold text-sm mb-1">
+                <i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i> Undangan Berhasil Dibuat!
+            </div>
+            <p class="text-xs text-slate-600">Salin & Bagikan Link Ini ke Klien Kamu:</p>
+            <div class="mt-2 p-3 bg-white border rounded-lg text-xs break-all font-mono flex items-center justify-between">
+                <a id="linkUndangan" href="#" target="_blank" class="text-blue-600 underline pr-2"></a>
+                <button onclick="copyLink()" class="bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded text-slate-700 text-xs font-semibold flex-shrink-0">
+                    <i class="fa-regular fa-copy mr-1"></i>Salin
+                </button>
             </div>
         </div>
     </div>
@@ -77,7 +91,7 @@
         document.getElementById('formUndangan').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnSubmit');
-            btn.innerText = "Menyimpan...";
+            btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-2"></i>Menyimpan...';
             btn.disabled = true;
 
             const slugVal = document.getElementById('slug').value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
@@ -104,12 +118,17 @@
                 document.getElementById('linkUndangan').href = generatedLink;
                 document.getElementById('linkUndangan').innerText = generatedLink;
                 document.getElementById('hasil').classList.remove('hidden');
-                document.getElementById('formUndangan').reset();
             }
 
-            btn.innerText = "Generate Link Undangan";
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i>Generate Link Undangan';
             btn.disabled = false;
         });
+
+        function copyLink() {
+            const linkText = document.getElementById('linkUndangan').innerText;
+            navigator.clipboard.writeText(linkText);
+            alert('Link berhasil disalin!');
+        }
     </script>
 </body>
 </html>
